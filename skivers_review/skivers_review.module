@@ -1,0 +1,501 @@
+<?php
+
+/**
+ * 	hook_theme();
+ * 	@return type
+ */
+function skivers_review_theme()
+{
+    return array(
+        'skivers_review_view' => array(
+            'template' => 'skivers_review_form_tpl',
+        ),
+        'skivers_review_result' => array(
+            'template' => 'skivers_review_result_tpl',
+        ),
+    );
+}
+
+function skivers_review_init()
+{
+//    drupal_add_js(drupal_get_path('module', 'skivers_review') . '/js/skivers_review.js', array('scope' => 'footer'));
+//    drupal_add_js(drupal_get_path('module', 'skivers_review') . '/js/star-rating.min.js', array('scope' => 'header'));
+//    drupal_add_css(drupal_get_path('module', 'skivers_review') . '/css/font-awesome.min.css', array('scope' => 'header'));
+}
+
+/**
+ * 	hook_view();
+ * 	@return type
+ */
+function skivers_review_view()
+{
+    // We return the theme as it's simply rendering a form
+    return theme('skivers_review_view');
+}
+
+/**
+ * hook_menu();
+ * @return boolean
+ */
+function skivers_review_menu()
+{
+
+    $items = array();
+
+
+    $items['reviews'] = array(
+        'title' => '',
+        'page callback' => 'skivers_review_view',
+        'menu_name' => 'main-menu',
+        'weight' => 8,
+        'access arguments' => array('access content'),
+        'expanded' => TRUE
+    );
+
+    $items['reviews/ajax-delete'] = array
+        (
+        'page callback' => 'skivers_review_ajax_delete',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+    $items['reviews/ajax-publish'] = array
+        (
+        'page callback' => 'skivers_review_ajax_publish',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+
+    return $items;
+}
+
+/**
+ *
+ * @return string
+ */
+function skivers_review_form()
+{
+
+    // Include custom functions
+//    include_once(drupal_get_path('module', 'skivers_review') . '/skivers_review.func');
+
+    $form = array();
+//    $form['#attributes']['enctype'] = "multipart/form-data";
+
+
+    $form['skivers_review_form_nid'] = array(
+        '#type' => 'hidden',
+        '#maxlength' => 128,
+        '#attributes' => array(
+            'id' => array('form_nid'),
+        ),
+    );
+    $form['skivers_review_form_firstname'] = array(
+        '#type' => 'textfield',
+        '#title' => t('First Name'),
+        '#attributes' => array(
+            'class' => array('firstname form_field_size'),
+            'placeholder' => array('Your First name')
+        ),
+        '#size' => 53,
+        '#maxlength' => 128,
+        '#required' => TRUE,
+        '#description' => t('Please enter your first name'),
+    );
+    $form['skivers_review_form_surname'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Last Name'),
+        '#attributes' => array(
+            'class' => array('lasttname form_field_size'),
+            'placeholder' => array('Your Last name')
+        ),
+        '#size' => 53,
+        '#maxlength' => 128,
+        '#required' => TRUE,
+        '#description' => t('Please enter your last name'),
+    );
+    $form['skivers_review_form_email'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Email Address'),
+        '#attributes' => array(
+            'class' => array('email form_field_size'),
+            'placeholder' => array('Your  E-mail address')
+        ),
+        '#size' => 53,
+        '#maxlength' => 128,
+        '#required' => TRUE,
+        '#description' => t('Please enter your  E-mail address'),
+    );
+
+    $form['skivers_review_form_title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Short Title'),
+        '#attributes' => array(
+            'class' => array('title form_field_size'),
+            'placeholder' => array('One Word That Describes Your Experiance')
+        ),
+        '#size' => 53,
+        '#maxlength' => 128,
+        '#required' => TRUE,
+        '#description' => t('One Word That Describes Your Experiance'),
+    );
+    $form['skivers_review_form_review'] = array(
+        '#type' => 'textarea',
+        '#title' => t('review title'),
+        '#attributes' => array(
+            'class' => array('title form_field_size'),
+            'placeholder' => array('Tell us about your day and if you would recommend this dj?')
+        ),
+        '#maxlength' => 500,
+        '#required' => TRUE,
+        '#description' => t('Tell us about your day and if you would recommend this dj?'),
+    );
+    $form['skivers_review_form_rating'] = array(
+        '#type' => 'textfield',
+        '#title' => t('review'),
+        '#attributes' => array(
+            'class' => array('title form_field_size'),
+            'placeholder' => array('eg 5')
+        ),
+        '#size' => 3,
+        '#maxlength' => 3,
+        '#required' => TRUE,
+        '#description' => t(''),
+    );
+
+    $form['skivers_review_form_submit'] = array(
+        '#type' => 'submit',
+        '#attributes' => array('class' => array('gradient')),
+        '#value' => t('Submit Review'),
+    );
+
+    return $form;
+}
+
+/**
+ *
+ * @param type $form
+ * @param type $form_state
+ */
+function skivers_review_form_validate($form, &$form_state)
+{
+    // Ensure email is valid
+    $email = $form['skivers_review_form_email']["#value"];
+    if (!valid_email_address($email))
+    {
+        form_set_error('skivers_review_form_email', t('Please check your email address and ensure it is valid.'));
+    }
+
+//    $file = file_save_upload('file', array(
+//        'file_validate_is_image' => array(),
+//        'file_validate_extensions' => array('png gif jpg jpeg'),
+//    ));
+//    if ($file)
+//    {
+//        if ($file = file_move($file, 'public://'))
+//        {
+//            $form_state['values']['file'] = $file;
+//        }
+//        else
+//        {
+//            form_set_error('file', t('Failed to write the uploaded file the site\'s file folder.'));
+//        }
+//    }
+//    else
+//    {
+//        form_set_error('file', t('No file was uploaded.'));
+//    }
+}
+
+/**
+ *
+ * @param type $form
+ * @param type $form_state
+ * @return type
+ */
+//function skivers_review_ajax_callback(&$form, &$form_state) {
+function skivers_review_form_submit(&$form, &$form_state)
+{
+    $form_other = $form_state['input'];
+    $form_val = $form_state['values'];
+    try
+    {
+        if (db_table_exists('skivers_review'))
+        {
+            if (!empty($form_val))
+            {
+                $packages = array(
+                    'nid' => $form_other['skivers_review_form_nid'],
+                    'date' => date("Y-m-d H:i:s"),
+                    'first_name' => $form_val['skivers_review_form_firstname'],
+                    'last_name' => $form_val['skivers_review_form_surname'],
+                    'email_address' => $form_val['skivers_review_form_email'],
+                    'review_title' => $form_val['skivers_review_form_title'],
+                    'review' => $form_val['skivers_review_form_review'],
+                    'rating' => $form_val['skivers_review_form_rating'],
+                    'status' => 2,
+                );
+
+                db_insert('skivers_review')->fields($packages)->execute();
+            }
+        }
+    } catch (Exception $exc)
+    {
+        echo $exc->getTraceAsString();
+    }
+}
+
+function skivers_review_success(&$form, &$form_state)
+{
+    return "Thank You For Your Reviews";
+}
+
+function skivers_review_product_info()
+{
+    $item = db_query("
+			SELECT
+				node.nid,
+				node.title
+			FROM
+				node
+			WHERE
+				STATUS = 1
+			AND node.type = 'products'
+					")->fetchAll();
+
+    if (!empty($item))
+    {
+        return $item;
+    }
+}
+
+function skivers_review_product_image($fid)
+{
+
+    if (!empty($fid))
+    {
+        $item = db_query("
+			SELECT
+				file_managed.fid,
+				file_managed.uri		
+			FROM
+				file_managed
+			where file_managed.fid = :fid ", array(":fid" => $fid))->fetchObject();
+
+        if (!empty($item))
+        {
+            return $item;
+        }
+    }
+}
+
+function skivers_review_ajax_delete()
+{
+
+    if ($_GET['uid'])
+    {
+        $uid = $_GET['uid'];
+        $upload_del = db_delete('skivers_review')->condition('uid', $uid)->execute();
+        if ($upload_del)
+        {
+            return true;
+        }
+    }
+}
+
+function skivers_review_ajax_publish()
+{
+
+//	print_r($_GET);
+    if ($_GET['uid'])
+    {
+        $fid = (int) $_GET['uid'];
+        $upload_update = db_update('skivers_review')->fields(array('status' => 1))->condition('uid', $fid)->execute();
+        if ($upload_update)
+        {
+            return "Published";
+        }
+        else
+        {
+            
+        }
+    }
+}
+
+function skivers_review_youtube_get_video_id($input)
+{
+    // See README.txt for accepted URL formats.
+    preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'<> #]+)/", $input, $matches);
+
+    if (!empty($matches[1]))
+    {
+        $video_id = $matches[1];
+        return $video_id;
+    }
+
+    return FALSE;
+}
+
+function skivers_review_mixitup()
+{
+    $collection = db_query("
+			SELECT
+				skivers_review.uid,
+				skivers_review.nid,
+				skivers_review.image_fid,
+				skivers_review.youtube_url_id,
+				skivers_review.product_name,
+				skivers_review.first_name,
+				skivers_review.last_name,
+				skivers_review.email_address,
+				skivers_review.country,
+				skivers_review.`status`
+			FROM
+				skivers_review	
+			where skivers_review.`status`=1
+			order by skivers_review.uid desc
+			")->fetchAll();
+
+    if (!empty($collection))
+    {
+        return $collection;
+    }
+}
+
+function skivers_review_product_upload_listing()
+{
+    $collection = db_query("
+			SELECT
+                                skivers_review.uid,
+                                skivers_review.nid,
+                                skivers_review.date,
+                                skivers_review.first_name,
+                                skivers_review.last_name,
+                                skivers_review.email_address,
+                                skivers_review.review_title,
+                                skivers_review.review,
+                                skivers_review.rating,
+                                skivers_review.`status`
+                        FROM
+                                skivers_review			
+				order by skivers_review.uid desc
+			")->fetchAll();
+
+    if (!empty($collection))
+    {
+        return $collection;
+    }
+}
+
+function skivers_review_product_list($nid)
+{
+    $collection = db_query("
+			SELECT
+                                skivers_review.uid,
+                                skivers_review.nid,
+                                skivers_review.date,
+                                skivers_review.first_name,
+                                skivers_review.last_name,
+                                skivers_review.email_address,
+                                skivers_review.review_title,
+                                skivers_review.review,
+                                skivers_review.rating,
+                                skivers_review.`status`
+                        FROM
+                                skivers_review		
+                        where `status` = 1
+                        and skivers_review.nid = :nid
+				order by skivers_review.uid desc
+			", array(":nid" => $nid))->fetchAll();
+
+    if (!empty($collection))
+    {
+//        return $collection;
+
+        foreach ($collection as $r)
+            {
+            ?>
+            <div>
+                <i class="orange fa fa-quote-left pull-left "></i>
+
+                <?php echo $r->title; ?><br/>
+                <?php echo $r->review; ?>
+                <?php if (!empty($r->first_name)): ?>
+                    <br/><strong> <?php echo $r->first_name; ?> <?php echo $r->last_name; ?></strong>
+                <?php endif; ?>
+                <span class = "star-rating orange pull-right">
+                    <?php
+                    for ($i = 0; $i < $r->rating; $i++)
+                        {
+                        ?>
+                        <span class = "fa fa-star " data-rating = "<?php echo $i; ?>"></span>
+                        <?php
+                        }
+                    ?>
+                </span>
+            </div>
+            <hr/>
+            <?php
+            }
+    }
+    else
+    {
+        echo "<div class='orange'> Be the first one to leave a review</div>";
+    }
+}
+
+function skivers_review_count($nid)
+{
+    $collection = db_query("
+			SELECT
+                                count(rating) as rate
+                        FROM
+                                skivers_review
+                        WHERE
+                                `status` = 1
+
+                        and skivers_review.nid = :nid
+
+			", array(":nid" => $nid))->fetchObject();
+
+    if (!empty($collection))
+    {
+        return $collection;
+    }
+}
+
+function skivers_review_average_count($nid)
+{
+    $collection = db_query("
+			SELECT
+                                AVG(rating) as avg
+                        FROM
+                                skivers_review
+                        WHERE
+                                `status` = 1
+                        and skivers_review.nid = :nid
+
+			", array(":nid" => $nid))->fetchObject();
+
+    if (!empty($collection))
+    {
+        return (int) $collection->avg;
+    }
+}
+
+function skiver_review_stars($num)
+{
+    if (!empty($num))
+    {
+        for ($i = 0; $i < $num; $i++)
+            {
+            ?>
+            <span class = "fa fa-star " data-rating = "<?php echo $i; ?>"></span>
+            <?php
+            }
+    }
+    else
+    {
+        echo "<a style='color:orange'href='#review'>Be the first to review</a>";
+    }
+}

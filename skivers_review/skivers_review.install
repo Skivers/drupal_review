@@ -1,0 +1,110 @@
+<?php
+
+/**
+ * 	Implementation of hook_schema();
+ */
+function skivers_review_schema()
+{
+
+    $schema['skivers_review'] = array(
+        'description' => t('Store all uploaded items'),
+        'fields' => array(
+            'uid' => array(
+                'description' => 'The unique ID of a product',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'nid' => array(
+                'description' => 'The Node ID',
+                'type' => 'int',
+                'length' => 10,
+                'not null' => FALSE,
+            ),
+            'date' => array(
+                'type' => 'varchar',
+                'length' => 20,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'first_name' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'last_name' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'email_address' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'review_title' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'review' => array(
+                'type' => 'varchar',
+                'length' => 500,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'rating' => array(
+                'description' => 'rating',
+                'type' => 'int',
+                'length' => 10,
+                'not null' => FALSE,
+            ),
+            'status' => array(
+                'description' => 'publish or not',
+                'type' => 'int',
+                'length' => 10,
+                'not null' => FALSE,
+            ),
+        ),
+        'unique keys' => array(
+            'uid' => array('uid'),
+        ),
+        'primary key' => array('uid'),
+    );
+
+    return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function skivers_review_install()
+{
+    // Use schema API to create database table.
+    if (!db_table_exists('skivers_review'))
+    {
+        drupal_install_schema('skivers_review_schema');
+        return true;
+    }
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function skivers_review_uninstall()
+{
+    // Check table exists
+    if (db_table_exists('skivers_review'))
+    {
+        // Remove the table
+        drupal_uninstall_schema('skivers_review');
+        // purge all field infromation
+        field_purge_batch(1000);
+        node_types_rebuild();
+        return;
+    }
+}

@@ -1,0 +1,6 @@
+name = Skivers review
+description = review
+;dependencies[] =
+package = SKIVERS
+version = "7.x-0.1"
+core = 7.x

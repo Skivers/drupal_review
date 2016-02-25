@@ -1,12 +1,6 @@
 <?php
 
-// Custom functions
-// for Allcott Associates Calculator.
-
-/**
- * 	Array of MARKETING SOURCES
- * 	@return type
- */
+ 
 function skivers_review_product_type()
 {
 
@@ -20,85 +14,4 @@ function skivers_review_product_type()
         }
 
     return $options;
-
-//	return array(
-//		'1' => t('Google'),
-//		'2' => t('Google Adwords'),
-//		'3' => t('Estate Agent'),
-//		'4' => t('Financial Advisor'),
-//		'5' => t('Solicitor'),
-//		'6' => t('Other'),
-//	);
 }
-
-//
-///**
-// * 	Array of SURVEY TYPES
-// * 	@return type
-// */
-//function allcottassociates_calculator_form_type($int = NULL) {
-//	if (!empty($int)) {
-//		$array = allcottassociates_calculator_form_type();
-//		return $array[$int];
-//	} else {
-//		return array(
-//			'1' => t('Full Building Survey (whole house)'),
-//			'2' => t('Home Buyer Survey'),
-//			'3' => t('Specific Structual Survey (one area)'),
-//			'4' => t('Roof Survey'),
-//			'5' => t('Structural Calculations'),
-//			'6' => t('Solid Floor Slab Test'),
-//			'7' => t('Certificate of Structural Adequacy'),
-//		);
-//	}
-//}
-//
-///**
-// * 	Array of PROPERTY PRICES
-// * 	@return type
-// */
-//function allcottassociates_calculator_form_price($int = NULL) {
-//	if (!empty($int)) {
-//		$array = allcottassociates_calculator_form_price();
-//		return $array[$int];
-//	} else {
-//		return array(
-//			'1' => t('up to £100,000'),
-//			'2' => t('£100,001 - £200,000'),
-//			'3' => t('£200,001 - £300,000'),
-//			'4' => t('£300,001 - £400,000'),
-//			'5' => t('£400,001 - £500,000'),
-//			'6' => t('£500,001 - £600,000'),
-//			'7' => t('£600,001 - £700,000'),
-//			'8' => t('£700,001 - £800,000'),
-//			'9' => t('£800,001 - £900,000'),
-//			'10' => t('£900,001 - £1 million'),
-//			'11' => t('£1 - £1.5 million'),
-//			'12' => t('£1.5 - £2 million'),
-//			'13' => t('£2 - £3 million'),
-//		);
-//	}
-//}
-//
-///**
-// * 	Array of PROPERTY AGES
-// * 	@return type
-// */
-//function allcottassociates_calculator_form_age($int = NULL) {
-//	if (!empty($int)) {
-//		$array = allcottassociates_calculator_form_age();
-//		return $array[$int];
-//	} else {
-//		return array(
-//			'1' => t('1980 - present'),
-//			'2' => t('1951 - 1979'),
-//			'3' => t('1911 - 1960'),
-//			'4' => t('Victorian / Edwardian'),
-//			'5' => t('Built Before 1880'),
-//		);
-//	}
-//}
-
-
-
-
